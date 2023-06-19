@@ -12,11 +12,17 @@ class HouseAdmin(admin.ModelAdmin) :
     
     # 목록 생성 
     list_display = (
-        "name",
+        "name", 
         "price_per_night",
         "address",
         "pet_allowed"
     )
+
+    # list_display = (
+    #     "name", 
+    #     "price_per_night", 
+    #     ("address", "pet_allowed") # 어드민 패널 폼 양식에서 같은 행에 여러 열로 배치됨
+    # )
 
     # 필터 생성 
     list_filter = (
@@ -29,3 +35,8 @@ class HouseAdmin(admin.ModelAdmin) :
         # "address"
         "address__startswith",   # 검색어로 시작하는 조건도 설정 가능 
     )
+
+    # (어드민 패널에서의) 수정 제외 필드 
+    # exclude = (
+    #     "price_per_night",
+    # )
