@@ -19,5 +19,8 @@ class House(models.Model) :
         verbose_name="Pets Allowed?"
     )
 
+    # FK 
+    owner = models.ForeignKey("users.User", on_delete=models.CASCADE)
+
     def __str__(self) : 
         return self.name
