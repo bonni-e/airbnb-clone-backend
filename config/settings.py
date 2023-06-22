@@ -34,6 +34,8 @@ CUSTOM_APPS = [
     'users.apps.UsersConfig',
     'rooms.apps.RoomsConfig',
     'common.apps.CommonConfig',
+    'tweets.apps.TweetsConfig',
+    'experiences.apps.ExperiencesConfig',
 ]
 
 INSTALLED_APPS = [
