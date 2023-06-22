@@ -36,6 +36,7 @@ CUSTOM_APPS = [
     'common.apps.CommonConfig',
     'tweets.apps.TweetsConfig',
     'experiences.apps.ExperiencesConfig',
+    'categories.apps.CategoriesConfig',
 ]
 
 INSTALLED_APPS = [

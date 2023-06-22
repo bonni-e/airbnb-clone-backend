@@ -19,6 +19,7 @@ class Room(CommonModel) :   # 만들어둔 모델을 상속 받아 공통 필드
     address = models.CharField(max_length=250)
     pet_friendly = models.BooleanField(default=False)
     kind = models.CharField(max_length=20, choices=RoomKindChoices.choices)
+    category = models.ForeignKey("categories.Category", on_delete=models.SET_NULL, null=True, blank=True)
 
     # 외래키 설정 (N:1)
     # ㄴ room1, room2, room3 -> owner1 
