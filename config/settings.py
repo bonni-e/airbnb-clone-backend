@@ -37,6 +37,10 @@ CUSTOM_APPS = [
     'tweets.apps.TweetsConfig',
     'experiences.apps.ExperiencesConfig',
     'categories.apps.CategoriesConfig',
+    'reviews.apps.ReviewsConfig',
+    'wishlists.apps.WishlistsConfig',
+    'bookings.apps.BookingsConfig',
+    'medias.apps.MediasConfig',
 ]
 
 INSTALLED_APPS = [
