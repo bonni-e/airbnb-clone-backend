@@ -6,6 +6,6 @@ from .models import Photo, Video
 class PhotoAdmin(admin.ModelAdmin) :
     pass
 
-@admin.register(Photo)
+@admin.register(Video)
 class VideoAdmin(admin.ModelAdmin) :
     pass
