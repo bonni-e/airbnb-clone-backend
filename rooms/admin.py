@@ -8,6 +8,7 @@ class RoomAdmin(admin.ModelAdmin) :
         "name",
         "price",
         "kind",
+        "total_amenities",  # 아래 메소드의 결과값 
         "owner",
     )
 
@@ -21,6 +22,10 @@ class RoomAdmin(admin.ModelAdmin) :
         "kind",
         "amenities",
     )
+
+    # admin 에 메소드를 주거나, model 에서 정의하면 됨 
+    # def total_amenities(self, room) :
+    #     return room.amenities.count()
 
 @admin.register(Amenity)
 class AmenityAdmin(admin.ModelAdmin) :

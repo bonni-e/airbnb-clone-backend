@@ -7,6 +7,7 @@ class TweetAdmin(admin.ModelAdmin) :
     list_display = (
         "user",
         "payload",
+        "likes_count",
         "created_at",
         "modified_at",
     )
@@ -15,6 +16,9 @@ class TweetAdmin(admin.ModelAdmin) :
         "user",
         "created_at",
     )
+
+    # def likes(self, tweet) :
+    #     return tweet.like_set.all().count()
 
 @admin.register(Like)
 class LikeAdmin(admin.ModelAdmin) :
@@ -25,6 +29,13 @@ class LikeAdmin(admin.ModelAdmin) :
         "modified_at",
     )
 
-    list_filter = (
-         "created_at",
-    )
+    list_filter = [
+        "created_at",
+    ]
+
+    # search_fields = [
+    #     "user_key"
+    # ]
+
+    # def user_key(self, like) :
+    #     return like.user__user_pk
