@@ -47,6 +47,23 @@ class Room(CommonModel) :   # 만들어둔 모델을 상속 받아 공통 필드
         # return self.amenities.count()
         return self.amenities.filter().exclude().count()
 
+    def rating(room) :
+        count = room.reviews.count()
+        if count == 0 :
+            return "No Reviews"
+        else :
+            total_rating = 0
+            # for review in room.reviews.all() :
+            #     total_rating += review.rating
+
+            # 최적화 : 전체 데이터를 불러오는 것보다 타겟한 값만 가져오기 -> 
+            # print(room.reviews.all().values("rating"))
+            # <QuerySet [{'rating': 5}, {'rating': 1}, {'rating': 5}]> : 딕셔너리 반환함 
+
+            for review in room.reviews.all().values("rating") :
+                total_rating += review["rating"];
+
+            return round(total_rating/count, 2) 
 
 # class Amenity(models.Model) :
 class Amenity(CommonModel) :

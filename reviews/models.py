@@ -24,7 +24,7 @@ class Review(CommonModel) :
         related_name="reviews"
         )
     payload = models.TextField()
-    rating = models.PositiveIntegerField()
+    rating = models.PositiveIntegerField(default=5)
 
     def __str__(self) -> str:
         return f"{self.user} / {self.rating}"

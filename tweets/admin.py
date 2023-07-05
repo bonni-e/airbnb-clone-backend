@@ -13,8 +13,12 @@ class TweetAdmin(admin.ModelAdmin) :
     )
 
     list_filter = (
-        "user",
         "created_at",
+    )
+
+    search_fields = (
+        "payload",
+        "^user__username",
     )
 
     # def likes(self, tweet) :
@@ -33,9 +37,9 @@ class LikeAdmin(admin.ModelAdmin) :
         "created_at",
     ]
 
-    # search_fields = [
-    #     "user_key"
-    # ]
+    search_fields = [
+        "^user__username",
+    ]
 
     # def user_key(self, like) :
     #     return like.user__user_pk
