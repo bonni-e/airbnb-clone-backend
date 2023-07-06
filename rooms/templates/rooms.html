@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>{{title}}</h1>
+    <ul>
+        {% for room in rooms %}
+        <li><a href="/rooms/{{room.pk}}">{{room.name}}</a></li>
+            <ol type="a">
+                {% for amenity in room.amenities.all %}
+                <li>{{amenity.name}}</li>
+                {% endfor %}
+            </ol>
+        {% endfor %}
+    </ul>
+</body>
+</html>
