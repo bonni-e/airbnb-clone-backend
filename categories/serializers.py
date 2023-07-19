@@ -1,6 +1,29 @@
 from rest_framework import serializers
 from .models import Category
 
+'''
+리팩토링 후 
+'''
+
+class CategorySerializer(serializers.ModelSerializer) :
+    # 설정 
+    # ㄴ 설정만 하면, 알아서 필드값들을 맵핑하고 -> create() update() 메소드까지 정의해줌
+    class Meta : 
+        model = Category
+        
+        # 보여줄 필드를 정해주거나 
+        fields = (
+            "name",
+            "kind",
+        )
+
+        # 숨길 필드를 정해주면 됨 
+        # exclude = (
+        #     "kind",
+        # )
+
+'''
+리팩토링 전 
 class CategorySerializer(serializers.Serializer) :
     # Category가 가지고 있는 필드에 대한 설명을 해야함 
     # JSON 객체로 표현할 때, 어떤 자료형을 사용할지 Model과 일치하게 작성 
@@ -37,5 +60,6 @@ class CategorySerializer(serializers.Serializer) :
         instance.kind = validated_data.get('kind', instance.kind)
         instance.save()
         return instance
+'''
     
     
