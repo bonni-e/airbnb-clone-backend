@@ -50,8 +50,19 @@ class UserDetail(APIView) :
 #     serializer_class = TweetSerializer
 #     queryset = Tweet.objects.all()
 
-class UserTweets(ViewSet) :
-    def retrieve(self, request, pk=None) :
+# class UserTweets(ViewSet) :
+#     def retrieve(self, request, pk=None) :
+#         try :
+#             user = User.objects.get(pk=pk)
+#         except User.DoesNotExist :
+#             raise exceptions.NotFound
+        
+#         queryset = Tweet.objects.filter(user=user)
+#         serializer = TweetSerializer(instance=queryset, many=True)
+#         return Response(serializer.data)
+
+class UserTweets(APIView) :
+    def get(self, request, pk=None) :
         try :
             user = User.objects.get(pk=pk)
         except User.DoesNotExist :
@@ -60,5 +71,4 @@ class UserTweets(ViewSet) :
         queryset = Tweet.objects.filter(user=user)
         serializer = TweetSerializer(instance=queryset, many=True)
         return Response(serializer.data)
-
     
