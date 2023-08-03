@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import exceptions
 from rest_framework import status
 from .models import User
 from .serializer import *
+from tweets.serializers import *
 
 class Me(APIView):
     permission_classes = [IsAuthenticated,]
@@ -43,3 +45,20 @@ class UserDetail(APIView) :
             user = User.objects.get(pk=pk)
         except User.DoesNotExist :
             return Response(exceptions.NotFound)
+
+# class UserTweets(ModelViewSet) :
+#     serializer_class = TweetSerializer
+#     queryset = Tweet.objects.all()
+
+class UserTweets(ViewSet) :
+    def retrieve(self, request, pk=None) :
+        try :
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist :
+            raise exceptions.NotFound
+        
+        queryset = Tweet.objects.filter(user=user)
+        serializer = TweetSerializer(instance=queryset, many=True)
+        return Response(serializer.data)
+
+    
