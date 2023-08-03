@@ -10,18 +10,7 @@ class TinyUserSerializer(ModelSerializer) :
             "username",
         )
 
-class UserRequestSerializer(ModelSerializer) :
-    class Meta :
-        model = User
-        fields = (
-            "name",
-            "username",
-            "password",
-            "email",
-        )
-
-
-class PrivateUserSerializer(ModelSerializer) :
+class UserSerializer(ModelSerializer) :
     class Meta :
         model = User
         fields = "__all__"

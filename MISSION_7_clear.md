@@ -8,14 +8,16 @@
 ## Mission:
 - Using Django Rest Framework, ModelSerializer and APIView, build the following API routes:
 - Django Rest Framework 을 사용하여, ModelSerializer, APIView 그리고 아래와 같은 - API 루트를 빌드하세요.
-- GET /api/v1/tweets
-- POST /api/v1/tweets
-- GET /api/v1/tweets/<int:pk>
-- PUT /api/v1/tweets/<int:pk>
-- DELETE /api/v1/tweets/<int:pk>
-- GET /api/v1/users
-- GET /api/v1/users/<int:pk>
-- GET /api/v1/users/<int:pk>/tweets
+
+- GET /api/v1/tweets                    [V]
+- POST /api/v1/tweets                   [V]
+- GET /api/v1/tweets/<int:pk>           [V]
+- PUT /api/v1/tweets/<int:pk>           [V]
+- DELETE /api/v1/tweets/<int:pk>        [V]
+
+- GET /api/v1/users                     [V]
+- GET /api/v1/users/<int:pk>            [V]
+- GET /api/v1/users/<int:pk>/tweets     [V]
 
 ---
 ## Notes:

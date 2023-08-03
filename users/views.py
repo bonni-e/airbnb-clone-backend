@@ -23,11 +23,11 @@ class Me(APIView):
 class Users(APIView) :
     def get(self, request) :
         users = User.objects.all()
-        serializer = PrivateUserSerializer(users, many=True)
+        serializer = TinyUserSerializer(users, many=True)
         return Response(serializer.data)
     
     def post(self, request) :
-        serializer = UserRequestSerializer(data= request.data)
+        serializer = UserSerializer(data= request.data)
         if serializer.is_valid() :
             serializer.save()
             return Response(serializer.data)
@@ -43,8 +43,9 @@ class UserDetail(APIView) :
     def get_object(self, pk) :
         try :
             user = User.objects.get(pk=pk)
+            return user
         except User.DoesNotExist :
-            return Response(exceptions.NotFound)
+            raise exceptions.NotFound
 
 # class UserTweets(ModelViewSet) :
 #     serializer_class = TweetSerializer
