@@ -32,6 +32,6 @@ class User(AbstractUser) :
 
     avatar = models.ImageField(blank=True) # profile_photo
 
-    gender = models.CharField(max_length=10, choices=GenderChoices.choices)
-    language = models.CharField(max_length=2, choices=LanguageChoices.choices)
-    currency = models.CharField(max_length=5, choices=CurrencyChoices.choices)
+    gender = models.CharField(max_length=10, choices=GenderChoices.choices, null=True, blank=True)
+    language = models.CharField(max_length=2, choices=LanguageChoices.choices, default='kr')
+    currency = models.CharField(max_length=5, choices=CurrencyChoices.choices, default='won')
