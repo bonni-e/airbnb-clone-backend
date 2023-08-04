@@ -29,7 +29,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 THIRD_PARTY_APPS = [
-    "rest_framework"
+    "rest_framework",
+    'rest_framework.authtoken',
 ]
 
 CUSTOM_APPS = [
@@ -147,9 +148,13 @@ AUTH_USER_MODEL = 'users.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
+        
         # 내가 만든 인증 클래스 등록         
         # 'rest_framework.authentication.BasicAuthentication',
-        'config.authentication.UsernameAuthentication'
+        # 'config.authentication.UsernameAuthentication',
+
+        # 토큰 모델의 사용 등록 (양방향 시스템)
+        'rest_framework.authentication.TokenAuthentication',
 
     ]
 }

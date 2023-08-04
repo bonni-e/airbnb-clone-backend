@@ -1,5 +1,7 @@
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.response import Response
@@ -66,7 +68,7 @@ class Users(APIView) :
         serializer = UserSerializer(data= request.data)
         if serializer.is_valid() :
             user = serializer.save()
-            user.set_password(user.password)
+            user.set_password(request.data.get("password"))
             user.save()
             return Response(TinyUserSerializer(user).data)
         else :
@@ -110,4 +112,3 @@ class UserTweets(APIView) :
         queryset = Tweet.objects.filter(user=user)
         serializer = TweetSerializer(instance=queryset, many=True)
         return Response(serializer.data)
-    
