@@ -15,6 +15,7 @@ class Login(APIView) :
         username = request.data.get("username")
         password = request.data.get("password")
 
+        # 장고의 기본 쿠키-세션 인증 
         user = authenticate(request, username=username, password=password)
 
         if user :
@@ -53,11 +54,7 @@ class Me(APIView):
     
     def get(self, request) :
         user = request.user
-        print('\n\n>>>')
-        print(user)
-        print(dir(user))
-        print('<<<\n\n')
-        return Response({})
+        return Response(UserSerializer(user).data)
 
 class Users(APIView) :
     def get(self, request) :
