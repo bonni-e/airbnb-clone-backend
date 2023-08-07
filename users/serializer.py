@@ -16,5 +16,6 @@ class UserSerializer(ModelSerializer) :
         # fields = "__all__"
 
         exclude = (
+            "id",
             "password",
         )

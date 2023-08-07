@@ -1,3 +1,5 @@
+import jwt
+from django.conf import settings
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render
 from rest_framework.authtoken.models import Token
@@ -11,6 +13,25 @@ from rest_framework import status
 from .models import User
 from .serializer import *
 from tweets.serializers import *
+
+class JWTLogIn(APIView) :
+    def post(self, request) :
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        if not username or not password :
+            raise exceptions.ParseError
+        
+        user = authenticate(request, username=username, password=password)
+
+        if not user :
+            raise exceptions.NotAuthenticated("Wrong Password")
+        
+        # JWT 토큰 생성 시에 담을 유저 정보는 민감한 정보가 되어서는 안됨
+        # 내가 제공한 토큰인지 또는 수정에 대한 여부를 확인할 수 있다는 것만 활용함 
+        token = jwt.encode({"pk" : user.pk}, settings.SECRET_KEY, algorithm="HS256")
+        return Response({"token" : token})
+
 
 class Login(APIView) :
     def post(self, request) :

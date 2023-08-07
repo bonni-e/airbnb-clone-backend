@@ -1,6 +1,36 @@
+import jwt
+from django.conf import settings
 from rest_framework.authentication import BaseAuthentication
 from rest_framework import exceptions
 from users.models import User
+
+class JWTAuthentication(BaseAuthentication) :
+    def authenticate(self, request):
+        token = request.headers.get("Authorization")
+
+        if not token :
+            return None
+        
+        token = token.split('bearer ')
+
+        if not len(token) == 2 :
+            return None
+        
+        try :
+            decoded = jwt.decode(token[1], settings.SECRET_KEY, algorithms=["HS256"])
+        except jwt.DecodeError :
+            raise exceptions.AuthenticationFailed("Invalid Token")
+
+        pk = decoded.get("pk")
+
+        if not pk :
+            raise exceptions.AuthenticationFailed("Invalid Token")
+
+        try :
+            user = User.objects.get(pk=pk)
+            return (user, None)
+        except User.DoesNotExist :
+            raise exceptions.AuthenticationFailed("User Not Found")
 
 # User 를 반환하는 나만의 인증-권한 클래스 
 class UsernameAuthentication(BaseAuthentication) :
