@@ -13,6 +13,7 @@ pillow = "^9.5.0"
 djangorestframework = "^3.14.0"
 pyjwt = "^2.8.0"
 django-environ = "^0.10.0"
+poetry-add-requirements-txt = "^1.1.4"
 
 
 [build-system]

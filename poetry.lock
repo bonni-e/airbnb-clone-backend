@@ -15,6 +15,20 @@ files = [
 tests = ["mypy (>=0.800)", "pytest", "pytest-asyncio"]
 
 [[package]]
+name = "charset-normalizer"
+version = "2.1.1"
+description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
+optional = false
+python-versions = ">=3.6.0"
+files = [
+    {file = "charset-normalizer-2.1.1.tar.gz", hash = "sha256:5a3d016c7c547f69d6f81fb0db9449ce888b418b5b9952cc5e6e66843e9dd845"},
+    {file = "charset_normalizer-2.1.1-py3-none-any.whl", hash = "sha256:83e9a75d1911279afd89352c68b45348559d1fc0506b054b346651b5e7fee29f"},
+]
+
+[package.extras]
+unicode-backport = ["unicodedata2"]
+
+[[package]]
 name = "django"
 version = "4.2.2"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
@@ -145,6 +159,20 @@ docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-inline
 tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
 
 [[package]]
+name = "poetry-add-requirements-txt"
+version = "1.1.4"
+description = "Add dependencies specified in requirements.txt file(s) to your Poetry project"
+optional = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "poetry_add_requirements_txt-1.1.4-py3-none-any.whl", hash = "sha256:1a1ecc38423a89e686c1f460283a950fdd5b9b6ba3c3bdf3386b6e99a0768df8"},
+    {file = "poetry_add_requirements_txt-1.1.4.tar.gz", hash = "sha256:d4c6c5296426035d52f6f3171ea2ba315397004bded07c8758c6eacc3a0f42ea"},
+]
+
+[package.dependencies]
+charset-normalizer = ">=2.0.12,<3.0.0"
+
+[[package]]
 name = "pyjwt"
 version = "2.8.0"
 description = "JSON Web Token implementation in Python"
@@ -202,4 +230,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "820c8d798923acbe2962547b71a0d34193341131f91701389beebeb941e2dacc"
+content-hash = "089de498afaa52cfd9b8a1a5daecd3c721049c216356c3721234b5e6a9ac2ed6"
