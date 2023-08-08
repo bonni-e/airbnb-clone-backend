@@ -38,4 +38,28 @@ class TestAmenities(APITestCase) :
     #     # self.assertEqual(2+2, 4, "The math is wrong.")
     #     self.assertListEqual([2+2], [4], "The math is wrong.")
 
+class TestAmenity(APITestCase) :
+    URL = "/api/v1/rooms/amenities/"
+    NAME = "Amenity Test"
+    DESC = "Amenity Description"
+
+    def setUp(self) -> None:
+        Amenity.objects.create(name=self.NAME, description=self.DESC)
+
+    def test_get_amenity(self) :
+        pass
+
+    def test_get_amenity(self) :
+        response = self.client.get(self.URL + '1')
+        self.assertEqual(response.status_code, 200)
+
+        data = response.json()
+
+        self.assertListEqual([data["name"], data["description"]], [self.NAME, self.DESC])
+
+    def test_update_amenity(self) :
+        self.client.put(self.URL)
+
+    def test_delete_amenity(self) :
+        pass
     
