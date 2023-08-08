@@ -28,6 +28,7 @@ class TestAmenities(APITestCase) :
         response = self.client.post(self.URL, data={"name":self.NAME, "description":self.DESC})
         data = response.json()
 
+        self.assertIn("name", data)
         self.assertEqual(response.status_code, 200, "Not 200 status code.")
         self.assertListEqual([data["name"], data["description"]], [self.NAME, self.DESC])
 
