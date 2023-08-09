@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
+from rest_framework import exceptions
 from rest_framework import status
 from .models import Tweet
 from .serializers import TweetSerializer
@@ -14,6 +15,8 @@ def get_all_tweets(request) :
     })
 
 class Tweets(APIView) :
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get(self, request) :
         tweets = Tweet.objects.all()
         serializer = TweetSerializer(tweets, many=True)
@@ -22,18 +25,23 @@ class Tweets(APIView) :
     def post(self, request) :
         serializer = TweetSerializer(data=request.data)
         if serializer.is_valid() :
-            serializer.save()
+            if not request.user :
+                raise exceptions.NotAuthenticated
+
+            serializer.save(user=request.user)
             return Response(serializer.data)
         else :
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class TweetDetail(APIView) :
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get_obgject(self, pk) :
         try :
             tweet = Tweet.objects.get(pk=pk)
             return tweet
         except Tweet.DoesNotExist :
-            raise NotFound
+            raise exceptions.NotFound
 
     def get(self, request, pk) : 
         tweet = self.get_obgject(pk) 
