@@ -1,6 +1,36 @@
 # from django.test import TestCase
 from rest_framework.test import APITestCase
+from users.models import User
 from .models import * 
+
+class TestRooms(APITestCase) :
+    URL = "/api/v1/rooms/"
+    
+    def setUp(self) -> None:
+        user = User.objects.create(username="admin")
+        user.set_password("123")
+        user.save()
+        self.user = user
+
+    def test_create_room(self) :
+        # login 
+        # self.client.login(username="admin", password="123")
+        self.client.force_login(self.user)
+        
+        response = self.client.post(self.URL, data={
+            "name" : "서초 오피스텔",
+            "description" : "좋은 방",
+            "rooms" : 1,
+            "toilets" : 1,
+            "address" : "서울시 서초구 방배동",
+            "kind" : "private_room",
+            "price" : 30000
+        })
+        print(response.json())
+
+        self.assertNotEqual(response.status_code, 403, 'permission is denied')
+        print(response.json())
+        self.assertEqual(response.status_code, 200, 'status code is not 200')
 
 class TestAmenities(APITestCase) :
     URL = "/api/v1/rooms/amenities/"
@@ -27,10 +57,12 @@ class TestAmenities(APITestCase) :
     def test_create_amenity(self) :
         response = self.client.post(self.URL, data={"name":self.NAME, "description":self.DESC})
         data = response.json()
+        print("data : ", data)
 
         self.assertIn("name", data)
-        self.assertEqual(response.status_code, 200, "Not 200 status code.")
+        self.assertLessEqual(len(data["name"]), 180, 'name length over 180')
         self.assertListEqual([data["name"], data["description"]], [self.NAME, self.DESC])
+        self.assertEqual(response.status_code, 200, "Not 200 status code.")
 
 
     # Sample
@@ -46,20 +78,34 @@ class TestAmenity(APITestCase) :
     def setUp(self) -> None:
         Amenity.objects.create(name=self.NAME, description=self.DESC)
 
-    def test_get_amenity(self) :
-        pass
+    def test_amenity_not_found(self) :
+        response = self.client.get(self.URL + '1')
+        self.assertEqual(response.status_code, 200, 'user not found')
 
     def test_get_amenity(self) :
+        self.test_amenity_not_found()
+
         response = self.client.get(self.URL + '1')
-        self.assertEqual(response.status_code, 200)
 
         data = response.json()
-
         self.assertListEqual([data["name"], data["description"]], [self.NAME, self.DESC])
+        self.assertEqual(response.status_code, 200)
 
     def test_update_amenity(self) :
-        self.client.put(self.URL)
+        self.test_amenity_not_found()
+
+        response = self.client.put(self.URL + '1', data={"name" : self.NAME, "discription" : self.DESC})
+        data = response.json()
+
+        self.assertIn("name", data)
+        self.assertLessEqual(len(data["name"]), 180, 'name length over 180')
+        self.assertListEqual([data["name"], data["description"]], [self.NAME, self.DESC])
+        self.assertEqual(response.status_code, 200, "Not 200 status code.")
 
     def test_delete_amenity(self) :
-        pass
+        self.test_amenity_not_found()
+
+        response = self.client.delete(self.URL + '1')
+        
+        self.assertEqual(response.status_code, 200)
     

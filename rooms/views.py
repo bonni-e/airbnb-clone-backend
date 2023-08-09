@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
@@ -7,13 +8,21 @@ from .serializers import *
 
 
 class Rooms(APIView) :
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get(self, request) :
         rooms = Room.objects.all()
         serializer = RoomListSerializer(rooms, many=True)
         return Response(serializer.data)
 
     def post(self, request) :
-        pass
+        serializer = RoomSerializer(data=request.data)
+        if serializer.is_valid() :
+            print("request.user : ", request.user)
+            room = serializer.save(owner=request.user)
+            return Response(RoomSerializer(room).data)
+        else :
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 class RoomDetail(APIView) :
     def get_object(self, pk) :
