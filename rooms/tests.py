@@ -1,6 +1,7 @@
 # from django.test import TestCase
 from rest_framework.test import APITestCase
 from users.models import User
+from categories.models import Category
 from .models import * 
 
 class TestRooms(APITestCase) :
@@ -11,6 +12,10 @@ class TestRooms(APITestCase) :
         user.set_password("123")
         user.save()
         self.user = user
+
+        Category.objects.create(name="원룸", kind="rooms")
+        Amenity.objects.create(name="배스밤", description="bath bomb")
+        Amenity.objects.create(name="냉장고", description="refregerator")
 
     def test_create_room(self) :
         # login 
@@ -24,6 +29,8 @@ class TestRooms(APITestCase) :
             "toilets" : 1,
             "address" : "서울시 서초구 방배동",
             "kind" : "private_room",
+            "category" : 1,
+            "amenities" : [1,2],
             "price" : 30000
         })
         print(response.json())
