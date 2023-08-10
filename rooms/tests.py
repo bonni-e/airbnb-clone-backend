@@ -46,6 +46,13 @@ class TestAmenities(APITestCase) :
 
     # 테스트 실행 전 동작할 메소드 (Database)
     def setUp(self) -> None:
+        user = User.objects.create(username="admin")
+        user.set_password("123")
+        user.save()
+        self.user = user
+
+        self.client.force_login(self.user)
+
         Amenity.objects.create(name=self.NAME, description=self.DESC)
         Amenity.objects.create(name=self.NAME, description=self.DESC)
         Amenity.objects.create(name=self.NAME, description=self.DESC)
@@ -83,11 +90,18 @@ class TestAmenity(APITestCase) :
     DESC = "Amenity Description"
 
     def setUp(self) -> None:
+        user = User.objects.create(username="admin")
+        user.set_password("123")
+        user.save()
+        self.user = user
+
+        self.client.force_login(self.user)
+
         Amenity.objects.create(name=self.NAME, description=self.DESC)
 
     def test_amenity_not_found(self) :
         response = self.client.get(self.URL + '1')
-        self.assertEqual(response.status_code, 200, 'user not found')
+        self.assertEqual(response.status_code, 200, 'Amenity not found')
 
     def test_get_amenity(self) :
         self.test_amenity_not_found()

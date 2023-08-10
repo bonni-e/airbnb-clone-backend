@@ -36,7 +36,7 @@ class TestTweet(APITestCase) :
         user.save() 
         self.user = user
         
-        Tweet.objects.create(payload="hello world")
+        Tweet.objects.create(payload="hello world", user=self.user)
     
     def test_tweet_not_found(self) :
         response = self.client.get(self.URL)

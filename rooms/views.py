@@ -94,7 +94,7 @@ class RoomDetail(APIView) :
 
 
 class Amenities(APIView) :
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request) :
         amenities = Amenity.objects.all()

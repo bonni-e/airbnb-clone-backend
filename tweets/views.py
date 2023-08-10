@@ -46,9 +46,6 @@ class TweetDetail(APIView) :
     def get(self, request, pk) : 
         tweet = self.get_obgject(pk) 
 
-        if not tweet.user == request.user :
-            raise exceptions.PermissionDenied
-
         serializer = TweetSerializer(tweet)
         return Response(serializer.data)
 
