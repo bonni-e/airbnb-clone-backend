@@ -14,6 +14,7 @@ class TestRooms(APITestCase) :
         self.user = user
 
         Category.objects.create(name="원룸", kind="rooms")
+
         Amenity.objects.create(name="배스밤", description="bath bomb")
         Amenity.objects.create(name="냉장고", description="refregerator")
 
@@ -33,7 +34,7 @@ class TestRooms(APITestCase) :
             "amenities" : [1,2],
             "price" : 30000
         })
-        print(response.json())
+        print("response.json() : ", response.json())
 
         self.assertNotEqual(response.status_code, 403, 'permission is denied')
         print(response.json())

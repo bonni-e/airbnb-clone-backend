@@ -51,7 +51,8 @@ class Room(CommonModel) :   # 만들어둔 모델을 상속 받아 공통 필드
     def rating(room) :
         count = room.reviews.count()
         if count == 0 :
-            return "No Reviews"
+            # return "No Reviews"
+            return 0
         else :
             total_rating = 0
             # for review in room.reviews.all() :

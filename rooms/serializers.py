@@ -1,28 +1,52 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from .models import *
 from users.serializer import TinyUserSerializer
 from categories.serializers import CategorySerializer
 
-class AmenitySerializer(ModelSerializer) :
+class AmenitySerializer(serializers.ModelSerializer) :
     class Meta : 
         model = Amenity
         fields = "__all__"
 
-class RoomSerializer(ModelSerializer) :
+class RoomSerializer(serializers.ModelSerializer) :
     owner = TinyUserSerializer(read_only=True)
     amenities = AmenitySerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
 
+    '''
+    * custom field 
+    '''
+    rating =  serializers.SerializerMethodField(read_only=True)
+    is_owner = serializers.SerializerMethodField(read_only=True)
+
+    def get_rating(self, room) :
+        return room.rating()
+    
+    # 방을 조회하는 유저에 따라 값이 달라지는 '동적 필드'
+    def get_is_owner(self, room) :
+        return room.owner == self.context["request"].user
+
     def create(self, validated_data):
         print("validated_data : ", validated_data)
         return super().create(validated_data)
+    '''
+    '''
 
     class Meta : 
         model = Room 
         fields = "__all__"
         # depth = 1
 
-class RoomListSerializer(ModelSerializer) :
+class RoomListSerializer(serializers.ModelSerializer) :
+    rating = serializers.SerializerMethodField(read_only=True)
+    is_owner = serializers.SerializerMethodField(read_only=True)
+
+    def get_rating(self, room) :
+        return room.rating()
+    
+    def get_is_owner(self, room) :
+        return room.owner == self.context["request"].user
+
     class Meta : 
         model = Room 
         fields = (
@@ -31,4 +55,6 @@ class RoomListSerializer(ModelSerializer) :
             "country",
             "city",
             "price",
+            "rating",
+            "is_owner",
         );

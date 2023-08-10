@@ -14,7 +14,9 @@ class Rooms(APIView) :
 
     def get(self, request) :
         rooms = Room.objects.all()
-        serializer = RoomListSerializer(rooms, many=True)
+        serializer = RoomListSerializer(rooms, many=True, context={
+            "request" : request
+        })
         return Response(serializer.data)
 
     def post(self, request) :
@@ -34,7 +36,7 @@ class Rooms(APIView) :
 
             amenities = []
 
-            if isinstance(amenities_pk, list) :
+            if not amenities_pk and isinstance(amenities_pk, list) :
                 for pk in amenities_pk :
                     try :
                         amenity = Amenity.objects.get(pk=pk)
@@ -48,10 +50,13 @@ class Rooms(APIView) :
                 # django db에 즉시 반영하지 않고, 변경 사항을 리스트업 -> 에러가 없는 경우에 푸시
                 with transaction.atomic() :
                     room = serializer.save(owner=request.user, category=category, amenities=amenities)
+                    serializer = RoomSerializer(room, context={
+                        "request" : request
+                    })
+                    return Response(serializer.data)
             except Exception :
                 raise ParseError
 
-            return Response(RoomSerializer(room).data)
         else :
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -67,7 +72,9 @@ class RoomDetail(APIView) :
 
     def get(self, request, pk) :
         room = self.get_object(pk)
-        serializer = RoomSerializer(room)
+        serializer = RoomSerializer(room, context={
+            "request" : request
+        })
         return Response(serializer.data)
 
     def put(self, request, pk) :
