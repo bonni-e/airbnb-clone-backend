@@ -45,11 +45,19 @@ class TweetDetail(APIView) :
 
     def get(self, request, pk) : 
         tweet = self.get_obgject(pk) 
+
+        if not tweet.user == request.user :
+            raise exceptions.PermissionDenied
+
         serializer = TweetSerializer(tweet)
         return Response(serializer.data)
 
     def put(self, request, pk) : 
         tweet = self.get_obgject(pk) 
+
+        if not tweet.user == request.user :
+            raise exceptions.PermissionDenied
+        
         serializer = TweetSerializer(instance=tweet, data=request.data, partial=True)
 
         if serializer.is_valid() :
@@ -60,5 +68,9 @@ class TweetDetail(APIView) :
 
     def delete(self, request, pk) : 
         tweet = self.get_obgject(pk) 
+
+        if not tweet.user == request.user :
+            raise exceptions.PermissionDenied
+        
         tweet.delete()
         return Response(status.HTTP_204_NO_CONTENT)

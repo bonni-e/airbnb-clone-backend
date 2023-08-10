@@ -1,8 +1,8 @@
 from django.db import transaction
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, ParseError
+from rest_framework.exceptions import NotFound, ParseError, PermissionDenied
 from rest_framework import status
 from categories.models import Category
 from .models import Room, Amenity
@@ -56,6 +56,8 @@ class Rooms(APIView) :
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RoomDetail(APIView) :
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get_object(self, pk) :
         try :
             room = Room.objects.get(pk=pk)
@@ -70,6 +72,10 @@ class RoomDetail(APIView) :
 
     def put(self, request, pk) :
         room = self.get_object(pk)
+
+        if not room.owner == request.user :
+            raise PermissionDenied("나쁜 사람~")
+        
         serializer = RoomSerializer(instance=room, data=request.data, partial=True)
         if serializer.is_valid() :
             serializer.save()
@@ -77,14 +83,19 @@ class RoomDetail(APIView) :
         else :
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def delete(self, request, pk) :
         room = self.get_object(pk)
+
+        if not room.owner == request.user :
+            raise PermissionDenied("나쁜 사람~")
+        
         room.delete()
         return Response(status.HTTP_204_NO_CONTENT)
 
 
 class Amenities(APIView) :
+    permission_classes = [IsAuthenticated]
+
     def get(self, request) :
         amenities = Amenity.objects.all()
         serializer = AmenitySerializer(amenities, many=True)
@@ -99,6 +110,8 @@ class Amenities(APIView) :
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
 
 class AmenityDetail(APIView) :
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, pk) :
         try :
             amenity = Amenity.objects.get(pk=pk)
