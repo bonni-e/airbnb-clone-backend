@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -30,18 +31,25 @@ class Rooms(APIView) :
                 raise ParseError('Category is not found.')
             
             amenities_pk = request.data.get("amenities")
-            amenities = []
-            for pk in amenities_pk :
-                try :
-                    amenity = Amenity.objects.get(pk=pk)
-                    amenities.append(amenity)
-                except Amenity.DoesNotExist :
-                    # raise ParseError('Amenity is not found.')
-                    pass
-            
-            room = serializer.save(owner=request.user, category=category, amenities=amenities)
 
-            # room.amenities.add(amenity)
+            amenities = []
+
+            if isinstance(amenities_pk, list) :
+                for pk in amenities_pk :
+                    try :
+                        amenity = Amenity.objects.get(pk=pk)
+                        amenities.append(amenity)
+                        # room.amenities.add(amenity)
+                    except Amenity.DoesNotExist :
+                        # raise ParseError('Amenity is not found.')
+                        pass
+        
+            try :
+                # django db에 즉시 반영하지 않고, 변경 사항을 리스트업 -> 에러가 없는 경우에 푸시
+                with transaction.atomic() :
+                    room = serializer.save(owner=request.user, category=category, amenities=amenities)
+            except Exception :
+                raise ParseError
 
             return Response(RoomSerializer(room).data)
         else :
