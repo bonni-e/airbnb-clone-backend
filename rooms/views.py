@@ -36,7 +36,8 @@ class Rooms(APIView) :
                     amenity = Amenity.objects.get(pk=pk)
                     amenities.append(amenity)
                 except Amenity.DoesNotExist :
-                    raise ParseError('Amenity is not found.')
+                    # raise ParseError('Amenity is not found.')
+                    pass
             
             room = serializer.save(owner=request.user, category=category, amenities=amenities)
 
