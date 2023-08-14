@@ -31,7 +31,7 @@ class Video(CommonModel) :
     experience = models.OneToOneField(
         "experiences.Experience", 
         on_delete=models.CASCADE, 
-        related_name="video"
+        related_name="videos"
         ) 
     # OneToOneField : Unique 하나의 활동에 대하여 하나의 동영상만 허용 
 

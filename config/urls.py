@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/v1/tweets/', include("tweets.urls")),
     path('api/v1/experiences/', include("experiences.urls")),
     path('api/v1/categories/', include("categories.urls")),
+    path('api/v1/medias/', include("medias.urls")),
 
 ]
 

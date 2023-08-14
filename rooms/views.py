@@ -28,14 +28,37 @@ class RoomPhotos(APIView) :
 
     def post(self, request, pk) :
         room = self.get_object(pk)
+
+        if not room.owner == request.user :
+            raise PermissionDenied
+
         serializer = PhotoSerializer(data=request.data)
         if serializer.is_valid() :
-            pass
+            with transaction.atomic() :
+                photo = serializer.save(room=room)
+        else :
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response()
+        return Response(serializer.data)
+    
+    # def delete(self, request, pk, photo_pk) :
+    #     room = self.get_object(pk)
+
+    #     if not room.owner == request.user :
+    #         raise PermissionDenied
+        
+    #     try :
+    #         photo = room.photos.get(pk=photo_pk)
+    #         photo.delete()
+    #     except Photo.DoesNotExist :
+    #         raise NotFound
+        
+    #     return Response(status.HTTP_204_NO_CONTENT)
         
 
 class RoomReviews(APIView) :
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get_object(self, pk) :
         try :
             room = Room.objects.get(pk=pk)
@@ -71,6 +94,17 @@ class RoomReviews(APIView) :
             raise ValidationError
         
         serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)
+    
+    # 리뷰 작성 
+    def post(self, request, pk) :
+        room = self.get_object(pk)
+        serializer = ReviewSerializer(data=request.data)
+        if serializer.is_valid() :
+            if not room.owner == request.user :
+                serializer.save(user=request.user, room=room)
+            else :
+                raise PermissionDenied
         return Response(serializer.data)
     
 # 페이지네이션 처리 2.

@@ -4,9 +4,17 @@ from .models import *
 class PhotoSerializer(ModelSerializer) :
     class Meta : 
         model = Photo
-        fields = "__all__"
+        fields = [
+            "pk",
+            "file",
+            "description"
+        ]
 
 class VideoSerializer(ModelSerializer) :
     class Meta : 
         model = Video
-        fields = "__all__"
+        fields = [
+            "pk",
+            "file",
+            "description"
+        ]
