@@ -146,6 +146,10 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+# MEDAI_URL = "uploads/"
+MEDIA_URL = "user-uploads/"
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #AUTH
@@ -166,3 +170,5 @@ REST_FRAMEWORK = {
     # Pagenation
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination'
 }
+
+PAGE_SIZE = 3

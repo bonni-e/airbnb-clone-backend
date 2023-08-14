@@ -3,7 +3,8 @@ from common.models import CommonModel
 
 # Create your models here.
 class Photo(CommonModel) :
-    file = models.ImageField()
+    # file = models.ImageField()
+    file = models.URLField()
     description = models.TextField()
     room = models.ForeignKey(
         "rooms.Room", 
@@ -24,7 +25,8 @@ class Photo(CommonModel) :
         return "Photo File"
 
 class Video(CommonModel) :
-    file = models.FileField()
+    # file = models.FileField()
+    file = models.URLField()
     description = models.TextField()
     experience = models.OneToOneField(
         "experiences.Experience", 

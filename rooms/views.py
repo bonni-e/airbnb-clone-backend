@@ -1,4 +1,5 @@
 from typing import Any
+from django.conf import settings
 from django.db import transaction
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.generics import ListAPIView
@@ -9,9 +10,30 @@ from rest_framework import status
 from categories.models import Category
 from .models import Room, Amenity
 from reviews.models import Review
+from medias.models import Photo
 from .serializers import *
 from reviews.serializers import ReviewSerializer
+from medias.serializers import *
 from reviews.pagenations import StandardResultsSetPagination
+
+class RoomPhotos(APIView) :
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk) :
+        try :
+            room = Room.objects.get(pk=pk)
+            return room
+        except Room.DoesNotExist :
+            raise NotFound
+
+    def post(self, request, pk) :
+        room = self.get_object(pk)
+        serializer = PhotoSerializer(data=request.data)
+        if serializer.is_valid() :
+            pass
+
+        return Response()
+        
 
 class RoomReviews(APIView) :
     def get_object(self, pk) :
@@ -41,9 +63,8 @@ class RoomReviews(APIView) :
         # ㄴ 슬라이싱 활용 
         # ㄴ OFFSET A LIMIT B 구문을 수행함 
 
-        page_size = 3
-        start = (page - 1) * 3
-        end = start + page_size
+        start = (page - 1) * settings.PAGE_SIZE
+        end = start + settings.PAGE_SIZE
         reviews = room.reviews.all()[start:end]
 
         if len(reviews) == 0 :
@@ -85,9 +106,8 @@ class RoomAmenities(APIView) :
         except ValueError :
             page = 1
         
-        page_size = 3
-        start = (page - 1) * page_size 
-        end = start + page_size 
+        start = (page - 1) * settings.PAGE_SIZE 
+        end = start + settings.PAGE_SIZE
         amenities = room.amenities.all()[start:end]
 
         if len(amenities) == 0 :
