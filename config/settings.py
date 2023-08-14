@@ -162,6 +162,7 @@ REST_FRAMEWORK = {
 
         # 토큰 모델의 사용 등록 (양방향 시스템)
         # 'rest_framework.authentication.TokenAuthentication',
-
-    ]
+    ],
+    # Pagenation
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination'
 }

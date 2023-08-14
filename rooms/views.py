@@ -1,12 +1,100 @@
+from typing import Any
 from django.db import transaction
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, ParseError, PermissionDenied
+from rest_framework.exceptions import NotFound, ParseError, PermissionDenied, ValidationError
 from rest_framework import status
 from categories.models import Category
 from .models import Room, Amenity
+from reviews.models import Review
 from .serializers import *
+from reviews.serializers import ReviewSerializer
+from reviews.pagenations import StandardResultsSetPagination
+
+class RoomReviews(APIView) :
+    def get_object(self, pk) :
+        try :
+            room = Room.objects.get(pk=pk)
+            return room
+        except Room.DoesNotExist :
+            raise NotFound
+
+    def get(self, request, pk) :
+        # 파라미터 값 가져오기 
+        # params :  <QueryDict: {'page': ['1']}>
+        params = request.query_params   
+        print("params : ", params)
+
+        try :
+            page = params.get("page", 1) # 디폴트 값 1 
+            print("page : ",  type(page))
+            page = int(page)
+            print("page : ",  type(page))
+        except ValueError :
+            page = 1
+
+        room = self.get_object(pk)
+
+        # 페이지네이션 처리 1.
+        # ㄴ 슬라이싱 활용 
+        # ㄴ OFFSET A LIMIT B 구문을 수행함 
+
+        page_size = 3
+        start = (page - 1) * 3
+        end = start + page_size
+        reviews = room.reviews.all()[start:end]
+
+        if len(reviews) == 0 :
+            raise ValidationError
+        
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)
+    
+# 페이지네이션 처리 2.
+class RoomReviewPagenation(ListAPIView) :
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def get(self, request, *args, **kwargs):
+        try :
+            pk = request.query_params.get('room')
+            room = Room.objects.get(pk=pk)
+            self.queryset = room.reviews.all()
+        except Room.DoesNotExist :
+            raise NotFound
+        
+        return super().get(request, *args, **kwargs)
+    
+class RoomAmenities(APIView) :
+    def get_object(self, pk) :
+        try :
+            room = Room.objects.get(pk=pk)
+            return room
+        except Room.DoesNotExist :
+            raise NotFound
+
+    def get(self, request, pk) :
+        room = self.get_object(pk)
+
+        page = request.query_params.get('page', 1)
+        try :
+            page = int(page)
+        except ValueError :
+            page = 1
+        
+        page_size = 3
+        start = (page - 1) * page_size 
+        end = start + page_size 
+        amenities = room.amenities.all()[start:end]
+
+        if len(amenities) == 0 :
+            raise ValidationError
+
+        serializer = AmenitySerializer(amenities, many=True)
+        return Response(serializer.data)
 
 
 class Rooms(APIView) :

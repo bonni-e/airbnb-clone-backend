@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from users.serializer import TinyUserSerializer
 from categories.serializers import CategorySerializer
+from reviews.serializers import ReviewSerializer
 
 class AmenitySerializer(serializers.ModelSerializer) :
     class Meta : 
@@ -10,7 +11,7 @@ class AmenitySerializer(serializers.ModelSerializer) :
 
 class RoomSerializer(serializers.ModelSerializer) :
     owner = TinyUserSerializer(read_only=True)
-    amenities = AmenitySerializer(read_only=True, many=True)
+    # amenities = AmenitySerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
 
     '''
@@ -18,6 +19,9 @@ class RoomSerializer(serializers.ModelSerializer) :
     '''
     rating =  serializers.SerializerMethodField(read_only=True)
     is_owner = serializers.SerializerMethodField(read_only=True)
+
+    # 역접근자 활용 (권장하지 않음 -> Pagenation)
+    # reviews = ReviewSerializer(many=True, read_only=True)
 
     def get_rating(self, room) :
         return room.rating()
@@ -34,7 +38,8 @@ class RoomSerializer(serializers.ModelSerializer) :
 
     class Meta : 
         model = Room 
-        fields = "__all__"
+        exclude = ['amenities']
+        # fields = "__all__"
         # depth = 1
 
 class RoomListSerializer(serializers.ModelSerializer) :
