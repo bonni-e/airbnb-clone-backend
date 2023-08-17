@@ -1,20 +1,65 @@
+from datetime import date, timedelta
 from typing import Any
+from django.utils import timezone
 from django.conf import settings
 from django.db import transaction
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.exceptions import NotFound, ParseError, PermissionDenied, ValidationError
 from rest_framework import status
 from categories.models import Category
 from .models import Room, Amenity
 from reviews.models import Review
 from medias.models import Photo
+from bookings.models import Booking
 from .serializers import *
 from reviews.serializers import ReviewSerializer
 from medias.serializers import *
+from bookings.serializers import *
 from reviews.pagenations import StandardResultsSetPagination
+
+class RoomBookings(APIView) :
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk) :
+        try : 
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist :
+            raise NotFound
+
+    # 예약 조회 
+    def get(self, request, pk) :
+        room = self.get_object(pk)
+        now = timezone.localtime().date()
+        print("now : ", now)
+        
+        bookings = Booking.objects.filter(room__pk=pk, kind=Booking.BookingKundChoices.ROOM, check_in__gte=now)
+        serializer = RoomBookingSerializer(bookings, many=True)
+        return Response(serializer.data)
+
+    # 예약 생성 
+    def post(self, request, pk) :
+        room = self.get_object(pk)
+        serializer = RoomBookingSerializer(data=request.data)
+        
+        if serializer.is_valid() :
+            with transaction.atomic() :
+                serializer.save(user=request.user, room=room, kind=Booking.BookingKundChoices.ROOM)
+
+                check_in = serializer.data['check_in']
+                check_out = serializer.data['check_out']
+
+                bookings = Booking.objects.filter(room__pk=pk, check_in__lt=check_out, check_out__gt=check_in)
+
+                if len(bookings) > 1 :
+                    raise ValidationError("노노노~")
+            
+                return Response(serializer.data)
+        else :
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class RoomPhotos(APIView) :
     permission_classes = [IsAuthenticatedOrReadOnly]
