@@ -47,7 +47,10 @@ class Room(CommonModel) :   # 만들어둔 모델을 상속 받아 공통 필드
     def total_amenities(self) :
         # return self.amenities.count()
         return self.amenities.filter().exclude().count()
-
+    
+    def review_count(self) :
+        return self.reviews.count()
+    
     def rating(room) :
         count = room.reviews.count()
         if count == 0 :
